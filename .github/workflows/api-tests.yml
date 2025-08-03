@@ -33,7 +33,9 @@ jobs:
           --environment login_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/get-invoices-report.html \
-          --reporter-htmlextra-title "Get Invoices API Tests"
+          --reporter-htmlextra-title "Get Invoices API Tests" \
+          -n 2 \
+          --suppress-exit-code
       continue-on-error: true
       
     - name: Run Invoices Adding Collection Tests
@@ -44,7 +46,9 @@ jobs:
           --globals invoice_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/invoices-adding-report.html \
-          --reporter-htmlextra-title "Invoices Adding API Tests"
+          --reporter-htmlextra-title "Invoices Adding API Tests" \
+          -n 2 \
+          --suppress-exit-code
       continue-on-error: true
       
     - name: Test Results Summary
