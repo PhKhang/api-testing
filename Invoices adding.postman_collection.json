@@ -383,7 +383,7 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8091",
+			"value": "https://api-with-bugs.practicesoftwaretesting.com",
 			"type": "default"
 		},
 		{
