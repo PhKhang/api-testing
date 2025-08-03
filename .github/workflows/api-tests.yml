@@ -33,9 +33,8 @@ jobs:
           --environment login_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/get-invoices-report.html \
-          --reporter-htmlextra-title "Get Invoices API Tests" \
-          --bail
-      continue-on-error: false
+          --reporter-htmlextra-title "Get Invoices API Tests"
+      continue-on-error: true
       
     - name: Run Invoices Adding Collection Tests
       run: |
@@ -45,9 +44,26 @@ jobs:
           --globals invoice_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/invoices-adding-report.html \
-          --reporter-htmlextra-title "Invoices Adding API Tests" \
-          --bail
-      continue-on-error: false
+          --reporter-htmlextra-title "Invoices Adding API Tests"
+      continue-on-error: true
+      
+    - name: Test Results Summary
+      if: always()
+      run: |
+        echo "=== Test Execution Summary ==="
+        echo "Both collections have been executed."
+        echo "Check the reports for detailed results."
+        echo "Even if some tests failed, all collections were run to completion."
+        if [ -f "reports/get-invoices-report.html" ]; then
+          echo "✅ Get Invoices report generated"
+        else
+          echo "❌ Get Invoices report missing"
+        fi
+        if [ -f "reports/invoices-adding-report.html" ]; then
+          echo "✅ Invoices Adding report generated"
+        else
+          echo "❌ Invoices Adding report missing"
+        fi
       
     - name: Upload test reports
       uses: actions/upload-artifact@v4

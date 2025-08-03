@@ -4,11 +4,17 @@
   "description": "API testing with Newman and Postman collections",
   "scripts": {
     "test": "npm run test:get-invoices && npm run test:invoices-adding",
+    "test:continue": "npm run test:get-invoices:continue & npm run test:invoices-adding:continue",
     "test:get-invoices": "newman run \"Get invoices.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json",
+    "test:get-invoices:continue": "newman run \"Get invoices.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --suppress-exit-code",
     "test:invoices-adding": "newman run \"Invoices adding.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --globals invoice_details.json",
+    "test:invoices-adding:continue": "newman run \"Invoices adding.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --globals invoice_details.json --suppress-exit-code",
     "test:reports": "npm run test:get-invoices:report && npm run test:invoices-adding:report",
+    "test:reports:continue": "npm run test:get-invoices:report:continue & npm run test:invoices-adding:report:continue",
     "test:get-invoices:report": "newman run \"Get invoices.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --reporters cli,htmlextra --reporter-htmlextra-export reports/get-invoices-report.html",
+    "test:get-invoices:report:continue": "newman run \"Get invoices.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --reporters cli,htmlextra --reporter-htmlextra-export reports/get-invoices-report.html --suppress-exit-code",
     "test:invoices-adding:report": "newman run \"Invoices adding.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --globals invoice_details.json --reporters cli,htmlextra --reporter-htmlextra-export reports/invoices-adding-report.html",
+    "test:invoices-adding:report:continue": "newman run \"Invoices adding.postman_collection.json\" --environment testing-environment.postman_environment.json --environment login_details.json --globals invoice_details.json --reporters cli,htmlextra --reporter-htmlextra-export reports/invoices-adding-report.html --suppress-exit-code",
     "install-newman": "npm install -g newman newman-reporter-htmlextra"
   },
   "dependencies": {
