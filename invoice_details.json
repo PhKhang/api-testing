@@ -1,0 +1,22 @@
+[
+  {
+    "total": 0,
+    "invoice_items": [
+      {
+        "product_id": 2,
+        "quantity": 10,
+        "unit_price": 39.01
+      }
+    ]
+  },
+  {
+    "total": 0,
+    "invoice_items": [
+      {
+        "product_id": 9,
+        "quantity": 1,
+        "unit_price": 12.01
+      }
+    ]
+  }
+]

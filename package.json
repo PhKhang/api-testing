@@ -1,0 +1,26 @@
+{
+  "name": "api-testing",
+  "version": "1.0.0",
+  "description": "API testing with Newman and Postman collections",
+  "scripts": {
+    "test": "npm run test:get-invoices && npm run test:invoices-adding",
+    "test:get-invoices": "newman run \"Get invoices.postman_collection.json\" --environment login_details.json",
+    "test:invoices-adding": "newman run \"Invoices adding.postman_collection.json\" --environment login_details.json --globals invoice_details.json",
+    "test:reports": "npm run test:get-invoices:report && npm run test:invoices-adding:report",
+    "test:get-invoices:report": "newman run \"Get invoices.postman_collection.json\" --environment login_details.json --reporters cli,htmlextra --reporter-htmlextra-export reports/get-invoices-report.html",
+    "test:invoices-adding:report": "newman run \"Invoices adding.postman_collection.json\" --environment login_details.json --globals invoice_details.json --reporters cli,htmlextra --reporter-htmlextra-export reports/invoices-adding-report.html",
+    "install-newman": "npm install -g newman newman-reporter-htmlextra"
+  },
+  "dependencies": {
+    "newman": "^6.2.1"
+  },
+  "devDependencies": {
+    "newman-reporter-htmlextra": "^1.23.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "author": "",
+  "license": "ISC"
+}

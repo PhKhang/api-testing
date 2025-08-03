@@ -1,0 +1,95 @@
+name: API Testing with Newman
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Install Newman globally
+      run: npm install -g newman newman-reporter-htmlextra
+      
+    - name: Run Get Invoices Collection Tests
+      run: |
+        newman run "Get invoices.postman_collection.json" \
+          --environment login_details.json \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export reports/get-invoices-report.html \
+          --reporter-htmlextra-title "Get Invoices API Tests" \
+          --bail
+      continue-on-error: false
+      
+    - name: Run Invoices Adding Collection Tests
+      run: |
+        newman run "Invoices adding.postman_collection.json" \
+          --environment login_details.json \
+          --globals invoice_details.json \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export reports/invoices-adding-report.html \
+          --reporter-htmlextra-title "Invoices Adding API Tests" \
+          --bail
+      continue-on-error: false
+      
+    - name: Upload test reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: newman-test-reports
+        path: reports/
+        retention-days: 30
+        
+    - name: Comment PR with test results
+      if: github.event_name == 'pull_request' && always()
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+          
+          let comment = '## 🧪 API Test Results\n\n';
+          
+          try {
+            // Check if reports directory exists
+            if (fs.existsSync('reports')) {
+              const files = fs.readdirSync('reports');
+              if (files.length > 0) {
+                comment += '✅ Test reports have been generated and uploaded as artifacts.\n\n';
+                comment += '📊 **Available Reports:**\n';
+                files.forEach(file => {
+                  comment += `- ${file}\n`;
+                });
+              } else {
+                comment += '❌ No test reports were generated.\n';
+              }
+            } else {
+              comment += '❌ Reports directory not found.\n';
+            }
+          } catch (error) {
+            comment += `❌ Error reading test reports: ${error.message}\n`;
+          }
+          
+          comment += '\n📥 Download the full reports from the Actions artifacts.';
+          
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
