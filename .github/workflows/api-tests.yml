@@ -29,6 +29,7 @@ jobs:
     - name: Run Get Invoices Collection Tests
       run: |
         newman run "Get invoices.postman_collection.json" \
+          --environment testing-environment.postman_environment.json \
           --environment login_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/get-invoices-report.html \
@@ -39,6 +40,7 @@ jobs:
     - name: Run Invoices Adding Collection Tests
       run: |
         newman run "Invoices adding.postman_collection.json" \
+          --environment testing-environment.postman_environment.json \
           --environment login_details.json \
           --globals invoice_details.json \
           --reporters cli,htmlextra \
