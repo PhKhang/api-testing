@@ -27,12 +27,15 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
+							"console.log(\"Login part\")\r",
+							"console.log(pm.iterationData.get(\"scenario\"))\r",
 							"if (pm.iterationData.get(\"scenario\") === \"authorized\") {\r",
 							"    pm.variables.set(\"email\", pm.iterationData.get(\"email\"));\r",
 							"    pm.variables.set(\"password\", pm.iterationData.get(\"password\"));\r",
 							"    console.log(\"Login as\", pm.iterationData.get(\"email\"));\r",
 							"} else {\r",
 							"    pm.execution.skipRequest();\r",
+							"    console.log(\"Unauthorized\");\r",
 							"}"
 						],
 						"type": "text/javascript",
