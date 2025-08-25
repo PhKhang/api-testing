@@ -1,0 +1,42 @@
+[
+  { "invoiceId": 3, "scenario": "unauthorized" },
+  { "invoiceId": 6, "scenario": "unauthorized" },
+  { "invoiceId": 4, "scenario": "unauthorized" },
+  { "invoiceId": 14, "scenario": "unauthorized" },
+  {
+    "invoiceId": 12,
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  },
+  {
+    "invoiceId": 15,
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  },
+  {
+    "invoiceId": 7,
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  },
+  {
+    "invoiceId": 1,
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  },
+  {
+    "invoiceId": 9,
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  },
+  {
+    "invoiceId": 16,
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
+    "password": "welcome01"
+  }
+]

@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "93b9b288-2c52-49bf-8399-f486f9ab2330",
-		"name": "Get invoices",
+		"_postman_id": "b2bb6fd5-6900-42da-bf60-9aea323ec830",
+		"name": "Update invoice",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "35234470"
 	},
@@ -30,6 +30,7 @@
 							"if (pm.iterationData.get(\"scenario\") === \"authorized\") {\r",
 							"    pm.variables.set(\"email\", pm.iterationData.get(\"email\"));\r",
 							"    pm.variables.set(\"password\", pm.iterationData.get(\"password\"));\r",
+							"    console.log(\"Login as\", pm.iterationData.get(\"email\"));\r",
 							"} else {\r",
 							"    pm.execution.skipRequest();\r",
 							"}"
@@ -65,17 +66,12 @@
 			"response": []
 		},
 		{
-			"name": "Me",
+			"name": "Get specific invoice",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"// // Check if status code is 200\r",
-							"// pm.test(\"Status code is 200\", function () {\r",
-							"//     pm.response.to.have.status(200);\r",
-							"// });\r",
-							"\r",
 							"// // Check if response body is not empty\r",
 							"// pm.test(\"Response body is not empty\", function () {\r",
 							"//     pm.expect(pm.response.text()).to.not.be.empty;\r",
@@ -87,94 +83,16 @@
 							"//     pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
 							"// });\r",
 							"\r",
-							"// Save user info as a variable\r",
-							"pm.collectionVariables.set(\"userId\", pm.response.json().id)"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"if (pm.iterationData.get(\"scenario\") === \"authorized\"){\r",
-							"    pm.request.headers.upsert({ key: \"Authorization\", value: `Bearer ${pm.collectionVariables.get('accessToken')}` })\r",
+							"const dataF = pm.response.json();\r",
+							"\r",
+							"if (dataF.status === \"COMPLETED\"){\r",
+							"    pm.collectionVariables.set(\"current\", \"ON_HOLD\")\r",
+							"    pm.collectionVariables.set(\"beforeState\", \"COMPLETED\")\r",
 							"}\r",
-							"else {\r",
-							"    pm.execution.skipRequest();\r",
+							"else{\r",
+							"    pm.collectionVariables.set(\"current\", \"COMPLETED\")\r",
+							"    pm.collectionVariables.set(\"beforeState\", dataF.status);\r",
 							"}"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{baseUrl}}/users/me",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"users",
-						"me"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get all invoices",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// // Check if status code is 200\r",
-							"// pm.test(\"Status code is 200\", function () {\r",
-							"//     pm.response.to.have.status(200);\r",
-							"// });\r",
-							"\r",
-							"// // Check if response body is not empty\r",
-							"// pm.test(\"Response body is not empty\", function () {\r",
-							"//     pm.expect(pm.response.text()).to.not.be.empty;\r",
-							"// });\r",
-							"\r",
-							"// // Check if Content-Type is application/json\r",
-							"// pm.test(\"Content-Type is application/json\", function () {\r",
-							"//     pm.response.to.have.header(\"Content-Type\");\r",
-							"//     pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
-							"// });\r",
-							"\r",
-							"const dataF = pm.response.json().data;\r",
-							"\r",
-							"const userIds = new Set();\r",
-							"\r",
-							"dataF.forEach((invoice) => {\r",
-							"    userIds.add(invoice.user_id);\r",
-							"})\r",
-							"\r",
-							"pm.test(\"Check if there is zero or only 1 user\", function () {\r",
-							"    pm.expect(userIds.size).to.be.lessThanOrEqual(1);\r",
-							"})"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -201,12 +119,118 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/invoices",
+					"raw": "{{baseUrl}}/invoices/{{invoiceId}}",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"path": [
-						"invoices"
+						"invoices",
+						"{{invoiceId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update invoice's status",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (pm.iterationData.get(\"scenario\") === \"authorized\"){\r",
+							"    pm.request.headers.upsert({ key: \"Authorization\", value: `Bearer ${pm.collectionVariables.get('accessToken')}` })\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"status\": \"{{current}}\",\r\n  \"status_message\": \"Not from admin account\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/invoices/{{invoiceId}}/status",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices",
+						"{{invoiceId}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get specific invoice again",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// // Check if response body is not empty\r",
+							"// pm.test(\"Response body is not empty\", function () {\r",
+							"//     pm.expect(pm.response.text()).to.not.be.empty;\r",
+							"// });\r",
+							"\r",
+							"// // Check if Content-Type is application/json\r",
+							"// pm.test(\"Content-Type is application/json\", function () {\r",
+							"//     pm.response.to.have.header(\"Content-Type\");\r",
+							"//     pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"// });\r",
+							"\r",
+							"const dataL = pm.response.json();\r",
+							"\r",
+							"pm.test(\"The invoice's status should not change\", function () {\r",
+							"    // pm.expect(dataL.status).to.eq(pm.collectionVariables.get(\"beforeState\"))\r",
+							"    pm.expect(dataL.status == pm.collectionVariables.get(\"beforeState\"), `Expected ${dataL.status} to loosely equal ${pm.collectionVariables.get(\"beforeState\")}`).to.true\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"if (pm.iterationData.get(\"scenario\") === \"authorized\"){\r",
+							"    pm.request.headers.upsert({ key: \"Authorization\", value: `Bearer ${pm.collectionVariables.get('accessToken')}` })\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/invoices/{{invoiceId}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices",
+						"{{invoiceId}}"
 					]
 				}
 			},
@@ -248,6 +272,14 @@
 		},
 		{
 			"key": "userId",
+			"value": ""
+		},
+		{
+			"key": "current",
+			"value": ""
+		},
+		{
+			"key": "beforeState",
 			"value": ""
 		}
 	]
