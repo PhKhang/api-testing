@@ -30,7 +30,7 @@ jobs:
       run: |
         newman run "Get invoices.postman_collection.json" \
           --environment testing-environment.postman_environment.json \
-          --environment login_details.json \
+          --iteration-data login_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/get-invoices-report.html \
           --reporter-htmlextra-title "Get Invoices API Tests" \
@@ -42,12 +42,23 @@ jobs:
       run: |
         newman run "Invoices adding.postman_collection.json" \
           --environment testing-environment.postman_environment.json \
-          --environment login_details.json \
+          --iteration-data login_details.json \
           --globals invoice_details.json \
           --reporters cli,htmlextra \
           --reporter-htmlextra-export reports/invoices-adding-report.html \
           --reporter-htmlextra-title "Invoices Adding API Tests" \
           -n 2 \
+          --suppress-exit-code
+      continue-on-error: true
+    
+    - name: Run Update Invoice Collection Tests
+      run: |
+        newman run "Update invoice.postman_collection.json" \
+          --environment testing-environment.postman_environment.json \
+          --iteration-data invoice_id.json \
+          --reporters cli,htmlextra \
+          --reporter-htmlextra-export reports/update-invoice-report.html \
+          --reporter-htmlextra-title "Update Invoice API Tests" \
           --suppress-exit-code
       continue-on-error: true
       
