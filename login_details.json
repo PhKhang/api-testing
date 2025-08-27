@@ -6,8 +6,20 @@
     "token": "invalid_token"
   },
   {
+    "scenario": "unauthorized",
+    "email": "",
+    "password": "",
+    "token": "invalid_token"
+  },
+  {
     "scenario": "authorized",
     "email": "customer2@practicesoftwaretesting.com",
+    "password": "welcome01",
+    "token": ""
+  },
+  {
+    "scenario": "authorized",
+    "email": "customer@practicesoftwaretesting.com",
     "password": "welcome01",
     "token": ""
   }
